@@ -1,6 +1,6 @@
 const Libreria = require('../models/library');
 
-async function createLibreria(req, res) {
+const createLibreria = async (req, res) => {
   try {
     const { name, location, telefono } = req.body;
     const libreria = await Libreria.create({ name, location, telefono });
@@ -9,12 +9,12 @@ async function createLibreria(req, res) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear la librería' });
   }
-}
+};
 
-async function getLibreria(req, res) {
+const getLibreria = async (req, res) => {
   try {
     const { id } = req.params;
-    const libreria = await Libreria.findByPk(id);
+    const libreria = await Libreria.findOne({ where: { id, eliminado: false } });
     if (libreria) {
       res.json(libreria);
     } else {
@@ -24,23 +24,65 @@ async function getLibreria(req, res) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener la librería' });
   }
-}
+};
 
-async function getAllLibrerias(req, res) {
+const getAllLibrerias = async (req, res) => {
   try {
-    const librerias = await Libreria.findAll();
+    const librerias = await Libreria.findAll({include: {all:true}, where: { eliminado: false }});
     res.json(librerias);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener las librerías' });
   }
-}
+};
 
-// Implementar los controladores restantes para actualizar y eliminar librerías
+const updateLibreria = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, location, telefono } = req.body;
+
+    const libreria = await Libreria.findOne({ where: { id, eliminado: false } });
+    if (!libreria) {
+      return res.status(404).json({ error: 'Librería no encontrada' });
+    }
+
+    libreria.name = name;
+    libreria.location = location;
+    libreria.telefono = telefono;
+
+    await libreria.save();
+
+    res.json(libreria);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al actualizar la librería' });
+  }
+};
+
+const deleteLibreria = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const libreria = await Libreria.findOne({ where: { id, eliminado: false } });
+    if (!libreria) {
+      return res.status(404).json({ error: 'Librería no encontrada' });
+    }
+
+    libreria.eliminado = true;
+    await libreria.save();
+
+    res.json({ message: 'Librería marcada como eliminada' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al marcar la librería como eliminada' });
+  }
+};
 
 module.exports = {
   createLibreria,
   getLibreria,
   getAllLibrerias,
-  // Exportar los demás controladores
+  updateLibreria,
+  deleteLibreria
 };
+

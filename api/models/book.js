@@ -24,6 +24,14 @@ const Libro = sequelize.define('Libro', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    eliminado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    libraryId: {
+        type: DataTypes.INTEGER,
+    }
 });
 
 module.exports = Libro;

@@ -10,6 +10,9 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  rol: {
+    type: DataTypes.STRING
+  }
 });
 
 module.exports = Usuario;

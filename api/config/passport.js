@@ -7,6 +7,7 @@ const User = require('../models/user');
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: 'your-secret-key',
+  expiresIn: 3600,
 };
 
 passport.use(

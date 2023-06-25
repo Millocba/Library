@@ -5,12 +5,14 @@ const {
   createLibreria,
   getLibreria,
   getAllLibrerias,
-  // Importar los demás controladores de Libreria
+  updateLibreria,
+  deleteLibreria,
 } = require('../controllers/libraryController');
 
 router.post('/', authenticateJWT, createLibreria);
 router.get('/:id', getLibreria);
 router.get('/', getAllLibrerias);
-// Definir las demás rutas de Libreria
+router.put('/:id', authenticateJWT, updateLibreria);
+router.patch('/:id', authenticateJWT, deleteLibreria);
 
 module.exports = router;

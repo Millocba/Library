@@ -5,12 +5,14 @@ const {
   createLibro,
   getLibro,
   getAllLibros,
-  // Importar los demás controladores de Libro
+  updateLibro,
+  deleteLibro
 } = require('../controllers/bookController');
 
 router.post('/', authenticateJWT, createLibro);
 router.get('/:id', getLibro);
 router.get('/', getAllLibros);
-// Definir las demás rutas de Libro
+router.put('/:id', authenticateJWT, updateLibro);
+router.patch('/:id', authenticateJWT, deleteLibro);
 
 module.exports = router;
