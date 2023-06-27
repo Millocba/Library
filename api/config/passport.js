@@ -6,15 +6,15 @@ const User = require('../models/user');
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'your-secret-key',
-  expiresIn: 3600,
+  secretOrKey: 'EeFwGaHwei3453!!',
+  expiresIn: 60, // Duración de 60 segundos
 };
 
 passport.use(
   new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
       const user = await User.findByPk(jwtPayload.id);
-      if (user) {
+      if(user && user.rol=="admin") {
         return done(null, user);
       } else {
         return done(null, false);

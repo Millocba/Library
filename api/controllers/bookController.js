@@ -2,14 +2,15 @@ const Libro = require('../models/book');
 
 const createLibro = async (req, res) => {
   try {
-    const { isbn, titulo, autor, year, library } = req.body;
-    const libro = await Libro.create({ isbn, titulo, autor, year, library });
+    const { isbn, titulo, autor, year, libraryId } = req.body;
+    const libro = await Libro.create({ isbn, titulo, autor, year, libraryId });
     res.json(libro);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear el libro' });
   }
 };
+
 
 const getLibro = async (req, res) => {
   try {

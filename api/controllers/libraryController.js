@@ -1,4 +1,5 @@
 const Libreria = require('../models/library');
+const Libro = require('../models/book');
 
 const createLibreria = async (req, res) => {
   try {
@@ -28,13 +29,23 @@ const getLibreria = async (req, res) => {
 
 const getAllLibrerias = async (req, res) => {
   try {
-    const librerias = await Libreria.findAll({include: {all:true}, where: { eliminado: false }});
+    const librerias = await Libreria.findAll({
+      where: { eliminado: false },
+      include: {
+        model: Libro,
+        as: 'libros',
+        where: { eliminado: false },
+        separate: true,
+      },
+    });
+
     res.json(librerias);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener las librerías' });
   }
 };
+
 
 const updateLibreria = async (req, res) => {
   try {
