@@ -7,7 +7,7 @@ const User = require('../models/user');
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: 'EeFwGaHwei3453!!',
-  expiresIn: 60, // Duración de 60 segundos
+  expiresIn: 3600, // Duración de 3600 segundos
 };
 
 passport.use(

@@ -1,25 +1,26 @@
-const Libro = require('../models/book');
+const {bookService} = require('../services');
 
-const createLibro = async (req, res) => {
+// Controlador para crear un book
+const createBook = async (req, res) => {
   try {
     const { isbn, titulo, autor, year, libraryId } = req.body;
-    const libro = await Libro.create({ isbn, titulo, autor, year, libraryId });
-    res.json(libro);
+    const book = await bookService.createBook(isbn, titulo, autor, year, libraryId);
+    res.json(book);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear el libro' });
   }
 };
 
-
-const getLibro = async (req, res) => {
+// Controlador para obtener un book por su ID
+const getBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const libro = await Libro.findOne({ where: { id, eliminado: false } });
-    if (libro) {
-      res.json(libro);
+    const book = await bookService.getBook(id);
+    if (book) {
+      res.json(book);
     } else {
-      res.status(404).json({ error: 'Libro no encontrado' });
+      res.status(404).json({ error: 'libro no encontrado' });
     }
   } catch (error) {
     console.error(error);
@@ -27,28 +28,25 @@ const getLibro = async (req, res) => {
   }
 };
 
-const getAllLibros = async (req, res) => {
+// Controlador para obtener todos los books
+const getAllBooks = async (req, res) => {
   try {
-    const libros = await Libro.findAll({ where: { eliminado: false } });
-    res.json(libros);
+    const books = await bookService.getAllBooks();
+    res.json(books);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener los libros' });
   }
 };
 
-const updateLibro = async (req, res) => {
+// Controlador para actualizar un book
+const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
     const { isbn, titulo, autor, year } = req.body;
-    const libro = await Libro.findOne({ where: { id, eliminado: false } });
-    if (libro) {
-      libro.isbn = isbn;
-      libro.titulo = titulo;
-      libro.autor = autor;
-      libro.year = year;
-      await libro.save();
-      res.json(libro);
+    const book = await bookService.updateBook(id, isbn, titulo, autor, year);
+    if (book) {
+      res.json(book);
     } else {
       res.status(404).json({ error: 'Libro no encontrado' });
     }
@@ -58,13 +56,12 @@ const updateLibro = async (req, res) => {
   }
 };
 
-const deleteLibro = async (req, res) => {
+// Controlador para eliminar un book
+const deleteBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const libro = await Libro.findOne({ where: { id, eliminado: false } });
-    if (libro) {
-      libro.eliminado = true;
-      await libro.save();
+    const success = await bookService.deleteBook(id);
+    if (success) {
       res.json({ message: 'Libro eliminado exitosamente' });
     } else {
       res.status(404).json({ error: 'Libro no encontrado' });
@@ -76,10 +73,9 @@ const deleteLibro = async (req, res) => {
 };
 
 module.exports = {
-  createLibro,
-  getLibro,
-  getAllLibros,
-  updateLibro,
-  deleteLibro
+  createBook,
+  getBook,
+  getAllBooks,
+  updateBook,
+  deleteBook
 };
-

@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const Libro = require('./book');
+const Book = require('./book');
 
-const Libreria = sequelize.define('Libreria', {
+const Library = sequelize.define('Library', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -24,13 +24,10 @@ const Libreria = sequelize.define('Libreria', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false,
-  },
-  booksId: {
-    type: DataTypes.INTEGER,
-  },
+  }
 });
 
-Libreria.hasMany(Libro, { as: 'libros', foreignKey: 'libraryId' });
-Libro.belongsTo(Libreria, { as: 'libreria', foreignKey: 'booksId' });
+Library.hasMany(Book, { as: 'books', foreignKey: 'libraryId' });
 
-module.exports = Libreria;
+
+module.exports = Library;

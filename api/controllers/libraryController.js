@@ -1,23 +1,25 @@
-const Libreria = require('../models/library');
-const Libro = require('../models/book');
+const {libraryService} = require('../services/');
+const {bookService} = require('../services/');
 
-const createLibreria = async (req, res) => {
+// Controller para crear una librería
+const createLibrary = async (req, res) => {
   try {
     const { name, location, telefono } = req.body;
-    const libreria = await Libreria.create({ name, location, telefono });
-    res.json(libreria);
+const library = await libraryService.createLibrary(name, location, telefono);
+    res.json(library);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear la librería' });
   }
 };
 
-const getLibreria = async (req, res) => {
+// Controller para obtener una librería por su ID
+const getLibrary = async (req, res) => {
   try {
     const { id } = req.params;
-    const libreria = await Libreria.findOne({ where: { id, eliminado: false } });
-    if (libreria) {
-      res.json(libreria);
+const library = await libraryService.getLibrary(id);
+    if (library) {
+      res.json(library);
     } else {
       res.status(404).json({ error: 'Librería no encontrada' });
     }
@@ -27,62 +29,47 @@ const getLibreria = async (req, res) => {
   }
 };
 
-const getAllLibrerias = async (req, res) => {
+// Controller para obtener todas las librerías
+const getAllLibraries = async (req, res) => {
   try {
-    const librerias = await Libreria.findAll({
-      where: { eliminado: false },
-      include: {
-        model: Libro,
-        as: 'libros',
-        where: { eliminado: false },
-        separate: true,
-      },
-    });
-
-    res.json(librerias);
+    const libraries = await libraryService.getAllLibraries();
+    res.json(libraries);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener las librerías' });
   }
 };
 
-
-const updateLibreria = async (req, res) => {
+// Controller para actualizar una librería
+const updateLibrary = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, location, telefono } = req.body;
 
-    const libreria = await Libreria.findOne({ where: { id, eliminado: false } });
-    if (!libreria) {
-      return res.status(404).json({ error: 'Librería no encontrada' });
+    const library = await libraryService.updateLibrary(id, name, location, telefono);
+    if (library) {
+      res.json(library);
+    } else {
+      res.status(404).json({ error: 'Librería no encontrada' });
     }
-
-    libreria.name = name;
-    libreria.location = location;
-    libreria.telefono = telefono;
-
-    await libreria.save();
-
-    res.json(libreria);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al actualizar la librería' });
   }
 };
 
-const deleteLibreria = async (req, res) => {
+// Controller para eliminar una librería
+const deleteLibrary = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const libreria = await Libreria.findOne({ where: { id, eliminado: false } });
-    if (!libreria) {
-      return res.status(404).json({ error: 'Librería no encontrada' });
+    const success = await libraryService.deleteLibrary(id);
+    if (success) {
+      await bookService.deleteBooksForeignKeyToNull(id);
+      res.json({ message: 'Librería marcada como eliminada' });
+    } else {
+      res.status(404).json({ error: 'Librería no encontrada' });
     }
-
-    libreria.eliminado = true;
-    await libreria.save();
-
-    res.json({ message: 'Librería marcada como eliminada' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al marcar la librería como eliminada' });
@@ -90,10 +77,11 @@ const deleteLibreria = async (req, res) => {
 };
 
 module.exports = {
-  createLibreria,
-  getLibreria,
-  getAllLibrerias,
-  updateLibreria,
-  deleteLibreria
+  createLibrary,
+  getLibrary,
+  getAllLibraries,
+  updateLibrary,
+  deleteLibrary
 };
+
 

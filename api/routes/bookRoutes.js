@@ -1,18 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateJWT } = require('../middlewares/authMiddleware');
-const {
-  createLibro,
-  getLibro,
-  getAllLibros,
-  updateLibro,
-  deleteLibro
-} = require('../controllers/bookController');
+const {bookController} = require('../controllers/');
 
-router.post('/', authenticateJWT, createLibro);
-router.get('/:id', getLibro);
-router.get('/', getAllLibros);
-router.put('/:id', authenticateJWT, updateLibro);
-router.patch('/:id', authenticateJWT, deleteLibro);
+router.post('/', authenticateJWT, bookController.createBook);
+router.get('/:id', bookController.getBook);
+router.get('/', bookController.getAllBooks);
+router.put('/:id', authenticateJWT, bookController.updateBook);
+router.patch('/:id', authenticateJWT, bookController.deleteBook);
+
 
 module.exports = router;
